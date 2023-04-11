@@ -1,22 +1,27 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Toast, Input, Divider, Carousel } from '@douyinfe/semi-ui';
+import { Button, Toast, Input, Divider, Avatar } from '@douyinfe/semi-ui';
 import { useEditor, EditorContent } from '@tiptap/react';
 import Placeholder from '@tiptap/extension-placeholder';
 import Image from '@tiptap/extension-image';
 import StarterKit from '@tiptap/starter-kit';
-import { IconImage, IconClose } from '@douyinfe/semi-icons';
+import { IconImage, IconClose, IconEmoji } from '@douyinfe/semi-icons';
 import { useOSSClient } from '@/hooks/oss-client';
 import dayjs from 'dayjs';
-import cx from 'classnames';
+import MyAvatar from '@/components/Avatar';
 
 import { api } from '@/utils/api';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
+import { useSession } from 'next-auth/react';
 
 const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([
+    'https://5610-final.oss-cn-shanghai.aliyuncs.com/images/2023-04-06/IMG_7859.JPG?Expires=1681198521&OSSAccessKeyId=TMP.3KeqgnWPrArdoTj3kpBwxZ33xGvfZVjhLzqx1xCYkB3QkHBBmjZyK9oPRcZSYHTUy4imi5rVknUQvTa95oi1FZ3sVCqxhM&Signature=jXbNsz13nHM4hJvgYfXC6WxU3jY%3D',
+    ,
+    'https://5610-final.oss-cn-shanghai.aliyuncs.com/images/2023-04-06/IMG_7950.JPG?Expires=1681198534&OSSAccessKeyId=TMP.3KeqgnWPrArdoTj3kpBwxZ33xGvfZVjhLzqx1xCYkB3QkHBBmjZyK9oPRcZSYHTUy4imi5rVknUQvTa95oi1FZ3sVCqxhM&Signature=Z2aUZQyu%2B7uN8zdem31kvYqrIsM%3D',
+  ]);
   const [title, setTitle] = useState('');
   const uploadRef = useRef<HTMLInputElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
@@ -90,63 +95,79 @@ const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
   };
 
   return (
-    <div>
-      <Input
-        placeholder='Please input title'
-        value={title}
-        onChange={(e) => setTitle(e)}
-        style={{
-          background: '#fff',
-          border: 'none',
-        }}
-      />
-      <Divider />
-      <EditorContent editor={editor} />
+    <div className='relative w-[600px] rounded-lg	bg-white px-8 py-8 pl-6 pb-4'>
+      <div className='flex gap-x-3'>
+        <MyAvatar />
+        <div className='flex-1'>
+          {/* <input
+            placeholder='Please input title'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{
+              border: 'none',
+              padding: '12px 20px',
+              borderRadius: 20,
+              backgroundColor: '#f8f8f8',
+              fontSize: 14,
+              outline: 'none',
+              width: '100%',
+              marginBottom: 8,
+            }}
+          /> */}
 
-      <div className='flex max-w-lg snap-x overflow-x-scroll'>
-        {images.map((src, index) => {
-          return (
-            <div key={src} className='relative snap-start scroll-ml-10'>
-              <div
-                className='h-40 w-60'
-                style={{ backgroundSize: 'cover', backgroundImage: `url(${src})` }}
-              />
-              <IconClose
-                style={{ cursor: 'pointer', position: 'absolute', right: 0, top: 0 }}
-                onClick={() => handleDeleteImage(index)}
-              />
-            </div>
-          );
-        })}
-      </div>
-      {/* <Carousel
-        className={cx('w-100 h-52', {
-          hidden: images.length === 0,
-        })}
-        theme='primary'
-        autoPlay={false}
-      >
-        {images.map((src, index) => {
-          return (
-            <div key={src}>
-              <div style={{ backgroundSize: 'cover', backgroundImage: `url(${src})` }} />
-              <IconClose style={{ cursor: 'pointer' }} onClick={() => handleDeleteImage(index)} />
-            </div>
-          );
-        })}
-      </Carousel> */}
-      <Divider />
-      <div className='flex justify-center'>
-        <div>
-          <input hidden ref={uploadRef} id='file' type='file' onChange={handleUpload} />
-          <Button icon={<IconImage />} onClick={() => uploadRef.current?.click()} />
+          <EditorContent editor={editor} />
+
+          <div className='mt-8 flex max-w-lg snap-x overflow-x-scroll'>
+            {images.map((src, index) => {
+              return (
+                <div key={src} className='relative snap-start scroll-ml-10'>
+                  <div
+                    className='h-40 w-60'
+                    style={{ backgroundSize: 'cover', backgroundImage: `url(${src})` }}
+                  />
+                  <IconClose
+                    style={{ cursor: 'pointer', position: 'absolute', right: 0, top: 0 }}
+                    onClick={() => handleDeleteImage(index)}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <Button id='toggle-emoji-btn' onClick={() => setShowEmoji((v) => !v)}>
-          😀
-        </Button>
-        <Button onClick={handlePublish}>Publish</Button>
       </div>
-      <div>
+
+      <Divider style={{ margin: '26px 0 14px 0' }} />
+
+      <div className='flex items-center justify-start'>
+        <div className='flex flex-1 items-center justify-start'>
+          <input hidden ref={uploadRef} id='file' type='file' onChange={handleUpload} />
+          <Button
+            icon={<IconImage style={{ color: '#673ab7' }} />}
+            iconStyle={{ color: 'green' }}
+            style={{ background: 'white', color: 'black', fontWeight: '400' }}
+            onClick={() => uploadRef.current?.click()}
+          >
+            Image
+          </Button>
+
+          <Button
+            icon={<IconEmoji style={{ color: 'rgb(244 63 94)' }} />}
+            style={{ background: 'white', color: 'black', fontWeight: '400' }}
+            id='toggle-emoji-btn'
+            onClick={() => setShowEmoji((v) => !v)}
+          >
+            Emoji
+          </Button>
+        </div>
+
+        <button
+          className='rounded-full bg-primary-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800'
+          onClick={handlePublish}
+        >
+          Publish
+        </button>
+      </div>
+      <div className='absolute'>
         {showEmoji && (
           <Picker
             data={data}

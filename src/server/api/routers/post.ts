@@ -113,10 +113,18 @@ export const postRouter = createTRPCRouter({
           published: true,
         },
         include: {
+          author: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+            },
+          },
           images: true,
           _count: {
             select: {
               likes: true,
+              comments: true,
             },
           },
           likes: {
@@ -148,6 +156,7 @@ export const postRouter = createTRPCRouter({
         id: input.id,
       },
       include: {
+        author: true,
         images: true,
         _count: {
           select: {
