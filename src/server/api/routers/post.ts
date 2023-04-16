@@ -66,48 +66,12 @@ export const postRouter = createTRPCRouter({
     }),
 
   findMany: publicProcedure
-    .input(z.object({ skip: z.number(), take: z.number() }))
+    .input(z.object({ skip: z.number(), take: z.number(), cursor: z.string().optional() }))
     .query(async ({ input, ctx }) => {
-      const queryConfig = {
-        where: {
-          isDeleted: false,
-          published: true,
-        },
-        include: {
-          images: true,
-          _count: {
-            select: {
-              likes: true,
-            },
-          },
-          likes: {
-            where: {
-              userId: ctx.session?.user.id,
-              isDeleted: false,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      };
-
-      // if (ctx.session?.user.id) {
-      //   queryConfig.include.
-      // }
-      const totalRecordsPromise = ctx.prisma.post.count({
-        where: {
-          isDeleted: false,
-          published: true,
-        },
-      });
-
-      const postsPromise = ctx.prisma.post.findMany({
+      const posts = await ctx.prisma.post.findMany({
         skip: input.skip,
-        take: input.take,
+        take: input.take + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
         where: {
           isDeleted: false,
           published: true,
@@ -142,11 +106,9 @@ export const postRouter = createTRPCRouter({
         },
       });
 
-      const [posts, totalRecords] = await Promise.all([postsPromise, totalRecordsPromise]);
       return {
-        posts,
-        curSkip: input.skip,
-        hasMore: input.skip + input.take < totalRecords,
+        posts: posts.slice(0, input.take),
+        hasMore: posts.length === input.take + 1,
       };
     }),
 

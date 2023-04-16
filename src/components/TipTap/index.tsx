@@ -10,18 +10,14 @@ import { IconImage, IconClose, IconEmoji } from '@douyinfe/semi-icons';
 import { useOSSClient } from '@/hooks/oss-client';
 import dayjs from 'dayjs';
 import MyAvatar from '@/components/Avatar';
+import cx from 'classnames';
 
 import { api } from '@/utils/api';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { useSession } from 'next-auth/react';
 
 const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
-  const [images, setImages] = useState<string[]>([
-    'https://5610-final.oss-cn-shanghai.aliyuncs.com/images/2023-04-06/IMG_7859.JPG?Expires=1681198521&OSSAccessKeyId=TMP.3KeqgnWPrArdoTj3kpBwxZ33xGvfZVjhLzqx1xCYkB3QkHBBmjZyK9oPRcZSYHTUy4imi5rVknUQvTa95oi1FZ3sVCqxhM&Signature=jXbNsz13nHM4hJvgYfXC6WxU3jY%3D',
-    ,
-    'https://5610-final.oss-cn-shanghai.aliyuncs.com/images/2023-04-06/IMG_7950.JPG?Expires=1681198534&OSSAccessKeyId=TMP.3KeqgnWPrArdoTj3kpBwxZ33xGvfZVjhLzqx1xCYkB3QkHBBmjZyK9oPRcZSYHTUy4imi5rVknUQvTa95oi1FZ3sVCqxhM&Signature=Z2aUZQyu%2B7uN8zdem31kvYqrIsM%3D',
-  ]);
+  const [images, setImages] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const uploadRef = useRef<HTMLInputElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
@@ -94,12 +90,18 @@ const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
     setImages((imgs) => imgs.filter((_, i) => i !== index));
   };
 
+  const picker = useMemo(() => {
+    return (
+      <Picker data={data} onEmojiSelect={handleEmojiClick} onClickOutside={handleClickOutside} />
+    );
+  }, [handleEmojiClick, handleClickOutside]);
+
   return (
     <div className='relative w-[600px] rounded-lg	bg-white px-8 py-8 pl-6 pb-4'>
       <div className='flex gap-x-3'>
         <MyAvatar />
         <div className='flex-1'>
-          {/* <input
+          <input
             placeholder='Please input title'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -113,10 +115,8 @@ const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
               width: '100%',
               marginBottom: 8,
             }}
-          /> */}
-
+          />
           <EditorContent editor={editor} />
-
           <div className='mt-8 flex max-w-lg snap-x overflow-x-scroll'>
             {images.map((src, index) => {
               return (
@@ -167,14 +167,12 @@ const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
           Publish
         </button>
       </div>
-      <div className='absolute'>
-        {showEmoji && (
-          <Picker
-            data={data}
-            onEmojiSelect={handleEmojiClick}
-            onClickOutside={handleClickOutside}
-          />
-        )}
+      <div
+        className={cx('absolute z-10', {
+          invisible: !showEmoji,
+        })}
+      >
+        {picker}
       </div>
     </div>
   );

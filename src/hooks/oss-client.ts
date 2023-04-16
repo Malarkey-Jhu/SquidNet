@@ -1,10 +1,17 @@
 import OSS from 'ali-oss';
 import { api } from '@/utils/api';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export const useOSSClient = () => {
   const [ossClient, setOSSClient] = useState<OSS>();
-  const { data: token, refetch, status } = api.oss.getSTS.useQuery();
+  const {
+    data: token,
+    refetch,
+    status,
+  } = api.oss.getSTS.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     if (status === 'success') {

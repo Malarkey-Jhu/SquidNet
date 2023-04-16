@@ -130,10 +130,18 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Role {
+  id Int @id @default(autoincrement())
+  name String
+  users User[]
+}
+
 model User {
   id            String     @id @default(cuid())
   email         String?    @unique
   password      String?
+  /// 1-men 2-women 3-other
+  gender        Int?       @db.UnsignedTinyInt()
   name          String?
   emailVerified DateTime?
   image         String?
@@ -144,6 +152,13 @@ model User {
   Comment       Comment[]
   likes         Like[]
   Favorite      Favorite[]
+  nscode        String?
+  showNsCode    Boolean    @default(false)
+  intro         String?
+  banner        String? 
+  country       String?
+  role Role? @relation(fields: [roleId], references: [id])
+  roleId Int?
 }
 
 model VerificationToken {

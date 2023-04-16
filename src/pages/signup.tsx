@@ -7,8 +7,9 @@ import cx from 'classnames';
 
 import { api } from '@/utils/api';
 import { useEffect, useState } from 'react';
-import { TRPCClientError } from '@trpc/client';
 import { Banner } from '@douyinfe/semi-ui';
+import Image from 'next/image';
+import router from 'next/router';
 
 const Home: NextPage = () => {
   const [userInfo, setUserInfo] = useState({
@@ -28,6 +29,12 @@ const Home: NextPage = () => {
         name: userInfo.name,
       },
       {
+        onSuccess() {
+          Toast.success({ content: 'Register success!', duration: 2 });
+          setTimeout(() => {
+            router.push('/signin');
+          }, 3000);
+        },
         onError(error, variables, context) {
           Toast.error({ content: error.message, duration: 3 });
         },
@@ -45,19 +52,14 @@ const Home: NextPage = () => {
         </Head>
 
         <Banner type='info' description='A pre-released version is available.' />
-        <section className='bg-gray-50 dark:bg-gray-900'>
+        <section className='bg-[url("/bg.webp")] bg-cover'>
           <div className='mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0'>
-            <a
-              href='#'
-              className='mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-white'
-            >
-              <img
-                className='mr-2 h-8 w-8'
-                src='https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg'
-                alt='logo'
-              />
-              Flowbite
-            </a>
+            <Link href='/'>
+              <div className='mb-2 flex items-center text-3xl font-semibold text-white'>
+                <Image src={'/logo.webp'} width={64} height={64} alt='logo' />
+                SquidNet
+              </div>
+            </Link>
             <div className='w-full rounded-lg bg-white shadow dark:border dark:border-gray-700 dark:bg-gray-800 sm:max-w-md md:mt-0 xl:p-0'>
               <div className='space-y-4 p-6 sm:p-8 md:space-y-6'>
                 <h1 className='text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl'>

@@ -5,11 +5,6 @@ import { ReactElement, useEffect, useRef, useState } from 'react';
 import { api } from '@/utils/api';
 import { Carousel } from '@douyinfe/semi-ui';
 import { Typography } from '@douyinfe/semi-ui';
-import { Empty } from '@douyinfe/semi-ui';
-import {
-  IllustrationConstruction,
-  IllustrationConstructionDark,
-} from '@douyinfe/semi-illustrations';
 
 import Image from 'next/image';
 import { events } from '@/helpers/event-emitter';
@@ -18,6 +13,7 @@ import { List, Skeleton, Button, Avatar, Toast } from '@douyinfe/semi-ui';
 import React from 'react';
 import { User, Comment, PostImage, Post } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import MyEmpty from '@/components/Empty';
 
 const COMMENT_CREATED = 'COMMENT_CREATED';
 const COMMENT_NUM = 'COMMENT_NUM';
@@ -26,6 +22,7 @@ type CommmentItem = Comment & { user: User };
 const PAGE_SIZE = 3;
 
 const CommentList = ({ postId }: { postId: string }) => {
+  const curPostIdRef = useRef(postId);
   const preSkipRef = useRef(-1);
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
@@ -38,13 +35,21 @@ const CommentList = ({ postId }: { postId: string }) => {
   );
 
   useEffect(() => {
-    if (isSuccess && skip !== preSkipRef.current) {
+    if (curPostIdRef.current !== postId) {
+      setCurComments([]);
+      setTotalComments(0);
+      setSkip(0);
+      curPostIdRef.current = postId;
+      preSkipRef.current = -1;
+      refetch();
+    }
+    if (curPostIdRef.current === postId && isSuccess && skip !== preSkipRef.current) {
       setCurComments((p) => [...p, ...data.comments]);
       preSkipRef.current = skip;
       setHasMore(data.hasMore);
       setTotalComments(data.total);
     }
-  }, [isSuccess, skip]);
+  }, [isSuccess, skip, postId]);
 
   useEffect(() => {
     events.emit(COMMENT_NUM, totalComments);
@@ -61,23 +66,6 @@ const CommentList = ({ postId }: { postId: string }) => {
       events.off(COMMENT_CREATED, commentCreatedHandler);
     };
   }, []);
-
-  const placeholder = (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        padding: 12,
-        borderBottom: '1px solid var(--semi-color-border)',
-      }}
-    >
-      <Skeleton.Avatar style={{ marginRight: 12 }} />
-      <div>
-        <Skeleton.Title style={{ width: 120, marginBottom: 12, marginTop: 12 }} />
-        <Skeleton.Paragraph style={{ width: 600 }} rows={2} />
-      </div>
-    </div>
-  );
 
   const loadMore =
     !isLoading && hasMore ? (
@@ -97,24 +85,15 @@ const CommentList = ({ postId }: { postId: string }) => {
       loading={false}
       loadMore={loadMore}
       dataSource={curComments}
-      emptyContent={
-        <Empty
-          image={<IllustrationConstruction style={{ width: 150, height: 150 }} />}
-          darkModeImage={<IllustrationConstructionDark style={{ width: 150, height: 150 }} />}
-          title={'No comments'}
-          description='Feel free to leave your comments'
-        />
-      }
+      emptyContent={<MyEmpty title='No comments' desc='Feel free to leave your comments' />}
       renderItem={(item: CommmentItem) => (
-        <Skeleton placeholder={placeholder} loading={isLoading}>
-          <List.Item
-            key={item.id}
-            header={<Avatar>{item.user.name}</Avatar>}
-            main={
-              <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>{item.content}</p>
-            }
-          />
-        </Skeleton>
+        <List.Item
+          key={item.id}
+          header={<Avatar>{item.user.name}</Avatar>}
+          main={
+            <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>{item.content}</p>
+          }
+        />
       )}
     />
   );
@@ -201,32 +180,37 @@ const Post: NextPageWithLayout = () => {
   const { Title, Paragraph } = Typography;
 
   return (
-    <div className='m-auto max-w-xl	pb-10'>
-      <Carousel
-        style={{
-          width: '100%',
-          height: '300px',
-          display: post?.data?.images?.length === 0 ? 'none' : 'block',
-        }}
-        theme='dark'
-        autoPlay={false}
-        showArrow={false}
-      >
-        {post?.data?.images?.map((image) => {
-          return <Image alt='postimages' key={image.id} src={image.url} fill />;
-        })}
-      </Carousel>
-      <Title heading={2} style={{ margin: '20px 0' }}>
-        {post?.data?.title}
-      </Title>
+    <main
+      className='min-h-screen pt-10
+  '
+    >
+      <div className='m-auto max-w-xl	pb-10'>
+        <Carousel
+          style={{
+            width: '100%',
+            height: '300px',
+            display: post?.data?.images?.length === 0 ? 'none' : 'block',
+          }}
+          theme='dark'
+          autoPlay={false}
+          showArrow={false}
+        >
+          {post?.data?.images?.map((image) => {
+            return <Image alt='postimages' key={image.id} src={image.url} fill />;
+          })}
+        </Carousel>
+        <Title heading={2} style={{ margin: '20px 0' }}>
+          {post?.data?.title}
+        </Title>
 
-      <Paragraph spacing='extended' style={{ margin: '20px 0' }}>
-        {post?.data?.content}
-      </Paragraph>
+        <Paragraph spacing='extended' style={{ margin: '20px 0' }}>
+          {post?.data?.content}
+        </Paragraph>
 
-      {pid && typeof pid === 'string' && <LeaveComment postId={pid} />}
-      {pid && typeof pid === 'string' && <CommentList postId={pid || ''} />}
-    </div>
+        {pid && typeof pid === 'string' && <LeaveComment postId={pid} />}
+        {pid && typeof pid === 'string' && <CommentList postId={pid || ''} />}
+      </div>
+    </main>
   );
 };
 
