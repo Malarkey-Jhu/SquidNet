@@ -30,3 +30,7 @@
 .ProseMirror img.ProseMirror-selectednode {
   outline: 3px solid #68cef8;
 }
+
+.semi-table-pagination-info {
+  display: none;
+}

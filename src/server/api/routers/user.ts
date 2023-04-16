@@ -71,14 +71,13 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      console.log(input, 'input');
-      const user = await ctx.prisma.user.update({
+      await ctx.prisma.user.update({
         where: {
           id: ctx.session.user.id,
         },
         data: input,
       });
-      return user;
+      return true;
     }),
 
   find: publicProcedure.input(z.object({ userId: z.string() })).query(async ({ input, ctx }) => {
@@ -133,6 +132,6 @@ export const userRouter = createTRPCRouter({
         },
       });
       // return the user
-      return user;
+      return true;
     }),
 });

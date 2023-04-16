@@ -16,12 +16,12 @@ const ProfileForm = React.forwardRef<Form<any>, { user: User | null | undefined 
       labelCol={{ span: 6 }}
       ref={ref}
       initValues={{
-        name: curUser.name,
-        country: curUser.country,
-        nscode: curUser.nscode,
-        showNsCode: curUser.showNsCode,
-        gender: curUser.gender,
-        intro: curUser.intro,
+        name: curUser.name ?? '',
+        country: curUser.country ?? '',
+        nscode: curUser.nscode ?? '',
+        showNsCode: curUser.showNsCode ?? false,
+        gender: curUser.gender ?? 0,
+        intro: curUser.intro ?? '',
       }}
     >
       <Form.Input

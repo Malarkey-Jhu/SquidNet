@@ -251,7 +251,7 @@ const Profile = () => {
       {isLoading ? (
         <>Loading</>
       ) : (
-        <div className='relative max-w-5xl overflow-hidden '>
+        <div className='relative w-full	 max-w-5xl overflow-hidden '>
           <input hidden ref={uploadRef} id='file' type='file' onChange={handleUpload} />
           <div className='relative'>
             <div

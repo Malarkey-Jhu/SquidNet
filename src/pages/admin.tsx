@@ -3,7 +3,8 @@ import { ReactElement, useEffect, useState } from 'react';
 import { Table, Avatar, Button, Modal, Toast } from '@douyinfe/semi-ui';
 import dayjs from 'dayjs';
 import { api } from '@/utils/api';
-import { IconDelete } from '@douyinfe/semi-icons';
+import { IconDelete, IconClose, IconTick } from '@douyinfe/semi-icons';
+import Link from 'next/link';
 
 const PAGE_SIZE = 4;
 
@@ -21,14 +22,14 @@ const Admin = () => {
 
   const { mutateAsync } = api.admin.deletePost.useMutation();
 
-  const deletePost = (postId: string) => {
+  const deletePost = (postId: string, isDeleted: boolean) => {
     Modal.confirm({
-      title: 'Delete this post',
-      content: 'Are you are going to delete the post?',
+      title: `${isDeleted ? 'Delete' : 'UnDelete'} this post`,
+      content: `Are you are going to ${isDeleted ? 'delete' : 'undelete'} the post?`,
       onOk: async () => {
         try {
-          await mutateAsync({ postId });
-          Toast.success('Deleted');
+          await mutateAsync({ postId, isDeleted });
+          Toast.success('Success');
           refetch();
         } catch (e) {
           Toast.error('Something went wrong');
@@ -46,6 +47,13 @@ const Admin = () => {
       title: 'Title',
       dataIndex: 'title',
       width: 300,
+      render: (value, record) => {
+        return (
+          <Link target='_blank' href={`/post/${record.id}`}>
+            {value}
+          </Link>
+        );
+      },
     },
     {
       title: 'Author',
@@ -53,13 +61,37 @@ const Admin = () => {
       width: 150,
       render: (authorInfo, record, index) => {
         return (
-          <div className='flex items-center justify-start gap-x-2'>
-            <Avatar size='default' src={authorInfo.image || ''}>
-              {authorInfo?.name?.charAt(0)}
-            </Avatar>
-            <span>{authorInfo.name}</span>
-          </div>
+          <Link target='_blank' href={`/profile/${authorInfo.id}`}>
+            <div className='flex items-center justify-start gap-x-2'>
+              <Avatar size='default' src={authorInfo.image || ''}>
+                {authorInfo?.name?.charAt(0)}
+              </Avatar>
+              <span>{authorInfo.name}</span>
+            </div>
+          </Link>
         );
+      },
+    },
+    {
+      title: 'Published',
+      dataIndex: 'published',
+      render: (published) => {
+        return (
+          <>
+            {published ? (
+              <IconTick style={{ color: 'lightgreen' }} />
+            ) : (
+              <IconClose style={{ color: 'red' }} />
+            )}
+          </>
+        );
+      },
+    },
+    {
+      title: 'Deleted',
+      dataIndex: 'isDeleted',
+      render: (isDeleted) => {
+        return <>{isDeleted ? <IconTick style={{ color: 'red' }} /> : '-'}</>;
       },
     },
     {
@@ -75,15 +107,25 @@ const Admin = () => {
       dataIndex: 'operate',
       width: 100,
       render: (text, record) => (
-        <Button icon={<IconDelete />} theme='borderless' onClick={() => deletePost(record.id)} />
+        <>
+          {!record.isDeleted ? (
+            <Button theme='borderless' onClick={() => deletePost(record.id, true)}>
+              Delete
+            </Button>
+          ) : (
+            <Button theme='borderless' onClick={() => deletePost(record.id, false)}>
+              UnDelete
+            </Button>
+          )}
+        </>
       ),
     },
   ];
 
   return (
     <div className='flex h-full w-full items-center justify-center'>
-      <div className='-mt-10	flex max-w-2xl flex-col items-center justify-center	text-white	'>
-        <h1 className='text-lg text-white'>Admin</h1>
+      <div className='-mt-10	flex max-w-2xl flex-col items-center justify-center	gap-4	text-white'>
+        <h1 className='text-3xl text-white'>All Posts</h1>
         <Table
           style={{ width: 800 }}
           columns={columns}
@@ -93,6 +135,7 @@ const Admin = () => {
             pageSize: PAGE_SIZE,
             total: postData?.total || 0,
             onPageChange: (p) => setPage(p),
+            showTotal: false,
           }}
           loading={isFetching}
         />

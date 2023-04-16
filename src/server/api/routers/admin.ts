@@ -3,14 +3,14 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/
 
 export const adminRouter = createTRPCRouter({
   deletePost: protectedProcedure
-    .input(z.object({ postId: z.string() }))
+    .input(z.object({ postId: z.string(), isDeleted: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.post.update({
         where: {
           id: input.postId,
         },
         data: {
-          isDeleted: true,
+          isDeleted: input.isDeleted,
         },
       });
       return true;
@@ -24,9 +24,6 @@ export const adminRouter = createTRPCRouter({
         ctx.prisma.post.findMany({
           skip: (input.page - 1) * input.pageSize,
           take: input.pageSize,
-          where: {
-            isDeleted: false,
-          },
           include: {
             author: {
               select: {
