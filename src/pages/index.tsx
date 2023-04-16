@@ -26,9 +26,14 @@ const PostAction = ({
   likesCount: number;
   commentsCount: number;
 }) => {
+  const session = useSession();
   const { mutateAsync } = api.post.like.useMutation();
   const [curLiked, setCurLiked] = useState(liked);
+  const isLoggedIn = session.status === 'authenticated';
+
   const handleLike = () => {
+    if (!isLoggedIn) return;
+
     mutateAsync({ postId, like: !curLiked })
       .then((res) => {
         setCurLiked(!curLiked);
@@ -40,9 +45,12 @@ const PostAction = ({
       <div className='flex items-center gap-x-1'>
         <IconLikeHeart
           onClick={handleLike}
-          className={cx('cursor-pointer  hover:text-red-400', {
-            'text-red-400': curLiked,
-            'text-slate-500/50': !curLiked,
+          className={cx({
+            'text-red-400': isLoggedIn && curLiked,
+            'text-slate-500/50': !isLoggedIn || !curLiked,
+            'cursor-not-allowed': !isLoggedIn,
+            'cursor-pointer': isLoggedIn,
+            'hover:text-red-400': isLoggedIn,
           })}
         />
         <span className='text-sm text-slate-400'>{likesCount}</span>

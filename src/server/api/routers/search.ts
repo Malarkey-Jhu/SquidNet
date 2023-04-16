@@ -68,7 +68,7 @@ export const searchRouter = createTRPCRouter({
       }
 
       const res = await youtube.search.list({
-        part: ['snippet', ''],
+        part: ['snippet'],
         q: input.text + 'Splatoon 3',
         type: ['video'],
         channelId: 'UC7Wu_7guCrcyykG51iH26Jg',

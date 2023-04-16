@@ -1,0 +1,176 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Account {
+  id String [pk]
+  userId String [not null]
+  type String [not null]
+  provider String [not null]
+  providerAccountId String [not null]
+  refresh_token String
+  access_token String
+  expires_at Int
+  token_type String
+  scope String
+  id_token String
+  session_state String
+  user User [not null]
+
+  indexes {
+    (provider, providerAccountId) [unique]
+  }
+}
+
+Table Post {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  published Boolean [not null, default: false]
+  title String [not null]
+  content String
+  banner String
+  author User [not null]
+  authorId String [not null]
+  comments Comment [not null]
+  likes Like [not null]
+  category Category
+  categoryId String
+  Favorite Favorite [not null]
+  images PostImage [not null]
+  isDeleted Boolean [not null, default: false]
+}
+
+Table PostImage {
+  id String [pk]
+  url String [not null]
+  postId String [not null]
+  order Int [not null]
+  post Post [not null]
+}
+
+Table Category {
+  id String [pk]
+  name String [not null]
+  posts Post [not null]
+}
+
+Table Comment {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  published Boolean [not null, default: false]
+  content String [not null]
+  userId String [not null]
+  user User [not null]
+  post Post [not null]
+  postId String [not null]
+  likes Like [not null]
+  parentId String
+  parent Comment
+  children Comment [not null]
+}
+
+Table Like {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String [not null]
+  user User [not null]
+  postId String
+  post Post
+  commentId String
+  comment Comment
+  isDeleted Boolean [not null, default: false]
+
+  indexes {
+    (userId, postId) [unique]
+    (userId, commentId) [unique]
+  }
+}
+
+Table Favorite {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String [not null]
+  postId String [not null]
+  user User [not null]
+  post Post [not null]
+}
+
+Table Session {
+  id String [pk]
+  sessionToken String [unique, not null]
+  userId String [not null]
+  expires DateTime [not null]
+  user User [not null]
+}
+
+Table Role {
+  id Int [pk, increment]
+  name String [not null]
+  users User [not null]
+}
+
+Table User {
+  id String [pk]
+  email String [unique]
+  password String
+  gender Int [note: '1-men 2-women 3-other']
+  name String
+  emailVerified DateTime
+  image String
+  accounts Account [not null]
+  sessions Session [not null]
+  createdAt DateTime [default: `now()`, not null]
+  Post Post [not null]
+  Comment Comment [not null]
+  likes Like [not null]
+  Favorite Favorite [not null]
+  nscode String
+  showNsCode Boolean [not null, default: false]
+  intro String
+  banner String
+  country String
+  role Role
+  roleId Int
+}
+
+Table VerificationToken {
+  identifier String [not null]
+  token String [unique, not null]
+  expires DateTime [not null]
+
+  indexes {
+    (identifier, token) [unique]
+  }
+}
+
+Ref: Account.userId > User.id [delete: Cascade]
+
+Ref: Post.authorId > User.id
+
+Ref: Post.categoryId > Category.id
+
+Ref: PostImage.postId > Post.id
+
+Ref: Comment.userId > User.id
+
+Ref: Comment.postId > Post.id
+
+Ref: Comment.parentId - Comment.id
+
+Ref: Like.userId > User.id
+
+Ref: Like.postId > Post.id
+
+Ref: Like.commentId > Comment.id
+
+Ref: Favorite.userId > User.id
+
+Ref: Favorite.postId > Post.id
+
+Ref: Session.userId > User.id [delete: Cascade]
+
+Ref: User.roleId > Role.id

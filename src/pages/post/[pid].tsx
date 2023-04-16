@@ -178,6 +178,7 @@ const Post: NextPageWithLayout = () => {
     : ({ data: {} } as { data: PostItem });
 
   const { Title, Paragraph } = Typography;
+  const session = useSession();
 
   return (
     <main
@@ -207,7 +208,9 @@ const Post: NextPageWithLayout = () => {
           {post?.data?.content}
         </Paragraph>
 
-        {pid && typeof pid === 'string' && <LeaveComment postId={pid} />}
+        {pid && typeof pid === 'string' && session.status === 'authenticated' && (
+          <LeaveComment postId={pid} />
+        )}
         {pid && typeof pid === 'string' && <CommentList postId={pid || ''} />}
       </div>
     </main>
