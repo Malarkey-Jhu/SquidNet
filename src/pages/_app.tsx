@@ -1,7 +1,7 @@
 import { type AppType } from 'next/app';
 import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
-import type { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode, useEffect } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import dayjs from 'dayjs';
@@ -28,6 +28,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }: AppPropsWithLayout) => {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
+  useEffect(() => {
+    const body = document.body;
+    if (body.hasAttribute('theme-mode')) {
+      body.removeAttribute('theme-mode');
+    } else {
+      body.setAttribute('theme-mode', 'dark');
+    }
+  }, []);
   return (
     <SessionProvider session={session}>
       <UserProivder>{getLayout(<Component {...pageProps} />)}</UserProivder>

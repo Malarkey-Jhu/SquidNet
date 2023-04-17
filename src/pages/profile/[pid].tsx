@@ -50,35 +50,34 @@ const MyPostList = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      <div className='grid grid-cols-3 gap-4'>
+      <div className='grid grid-cols-1 md:grid-cols-3 md:gap-4'>
         {curPosts.length > 0 ? (
           curPosts.map((post, idx) => {
             return (
               <Link href={`/post/${post.id}`} key={post.id}>
-                <div className='relative'>
-                  <Card
-                    style={{ maxWidth: 300 }}
-                    bodyStyle={{
-                      padding: 10,
-                    }}
-                    cover={
-                      <div className='relative'>
-                        <Image
-                          src={`/card-bg-${(idx % 3) + 1}.webp`}
-                          width={298}
-                          height={86}
-                          alt='example'
-                        />
-                        <h3 className='text-md	 absolute	top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 font-extrabold text-white	drop-shadow'>
-                          {post.title}
-                          {post.id}
-                        </h3>
-                      </div>
-                    }
-                  >
-                    {dayjs(post.createdAt).format('YYYY-MM-DD')}
-                  </Card>
-                </div>
+                <Card
+                  style={{ maxWidth: 300 }}
+                  bodyStyle={{
+                    padding: 10,
+                    overflow: 'hidden',
+                  }}
+                  cover={
+                    <div className='relative'>
+                      <Image
+                        src={`/card-bg-${(idx % 3) + 1}.webp`}
+                        width={298}
+                        height={86}
+                        alt='example'
+                      />
+                      <h3 className='text-md	 absolute	top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 font-extrabold text-white	drop-shadow'>
+                        {post.title}
+                        {post.id}
+                      </h3>
+                    </div>
+                  }
+                >
+                  {dayjs(post.createdAt).format('YYYY-MM-DD')}
+                </Card>
               </Link>
             );
           })
@@ -140,7 +139,7 @@ const MyLikeList = ({ userId }: { userId: string }) => {
 
   return (
     <div>
-      <div className='grid grid-cols-3 gap-4'>
+      <div className='grid grid-cols-1 md:grid-cols-3 md:gap-4'>
         {curPosts.length > 0 ? (
           curPosts.map((post, idx) => {
             return (
@@ -203,11 +202,11 @@ const Profile = () => {
   }
 
   return (
-    <div className='flex min-h-screen	 justify-center bg-[url("/bg.webp")] text-white'>
+    <div className='flex justify-center text-white'>
       {isLoading ? (
         <>Loading</>
       ) : (
-        <div className='relative max-w-5xl overflow-hidden'>
+        <div className='relative w-full	 overflow-hidden md:max-w-4xl '>
           <div className='relative'>
             <div
               style={{
@@ -231,9 +230,9 @@ const Profile = () => {
                 Message
               </button> */}
 
-              <button className='rounded-full bg-primary-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800'>
+              {/* <button className='rounded-full bg-primary-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800'>
                 Follow
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -258,9 +257,9 @@ const Profile = () => {
               <TabPane tab='Likes' itemKey='2' className='py-3'>
                 <MyLikeList userId={id as string} />
               </TabPane>
-              <TabPane tab='Follows' itemKey='3' className='py-3'>
+              {/* <TabPane tab='Follows' itemKey='3' className='py-3'>
                 <MyEmpty desc='This person has no follows' title='No follows' />
-              </TabPane>
+              </TabPane> */}
             </Tabs>
           </div>
         </div>

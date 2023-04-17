@@ -13,8 +13,15 @@ import MyAvatar from '@/components/Avatar';
 import cx from 'classnames';
 
 import { api } from '@/utils/api';
-import data from '@emoji-mart/data';
-import Picker from '@emoji-mart/react';
+import dynamic from 'next/dynamic';
+import { EmojiClickData, Theme } from 'emoji-picker-react';
+
+const Picker = dynamic(
+  () => {
+    return import('emoji-picker-react');
+  },
+  { ssr: false },
+);
 
 const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
   const [images, setImages] = useState<string[]>([]);
@@ -73,31 +80,34 @@ const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
       });
   };
 
-  const handleEmojiClick = (emoji: any) => {
-    editor?.chain().focus().insertContent(emoji.native).run();
+  const handleEmojiClick = (emojiData: EmojiClickData, event: MouseEvent) => {
+    editor?.chain().focus().insertContent(emojiData.emoji).run();
   };
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (e.target instanceof HTMLElement && e.target.closest('#toggle-emoji-btn')) {
-      return;
-    }
-    if (showEmoji) {
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        (e.target instanceof HTMLElement && e.target.closest('.EmojiPickerReact')) ||
+        e.target.closest('#toggle-emoji-btn')
+      ) {
+        return;
+      }
       setShowEmoji(false);
-    }
-  };
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   const handleDeleteImage = (index: number) => {
     setImages((imgs) => imgs.filter((_, i) => i !== index));
   };
 
-  const picker = useMemo(() => {
-    return (
-      <Picker data={data} onEmojiSelect={handleEmojiClick} onClickOutside={handleClickOutside} />
-    );
-  }, [handleEmojiClick, handleClickOutside]);
-
   return (
-    <div className='relative w-[600px] rounded-lg	bg-white px-8 py-8 pl-6 pb-4'>
+    <div className='relative w-full rounded-lg bg-white	px-8 py-8 pl-6 pb-4 md:w-[600px]'>
       <div className='flex gap-x-3'>
         <MyAvatar />
         <div className='flex-1'>
@@ -172,7 +182,7 @@ const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
           invisible: !showEmoji,
         })}
       >
-        {picker}
+        <Picker searchDisabled theme={Theme.DARK} onEmojiClick={handleEmojiClick} />
       </div>
     </div>
   );

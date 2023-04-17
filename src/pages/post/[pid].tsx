@@ -1,19 +1,22 @@
-import { useRouter } from 'next/router';
+import React from 'react';
 import Layout from '@/components/Layout';
 import { NextPageWithLayout } from '../_app';
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { api } from '@/utils/api';
-import { Carousel } from '@douyinfe/semi-ui';
+import { Carousel, Divider } from '@douyinfe/semi-ui';
 import { Typography } from '@douyinfe/semi-ui';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import Image from 'next/image';
 import { events } from '@/helpers/event-emitter';
 
-import { List, Skeleton, Button, Avatar, Toast } from '@douyinfe/semi-ui';
-import React from 'react';
-import { User, Comment, PostImage, Post } from '@prisma/client';
+import { List, Button, Avatar, Toast, TextArea } from '@douyinfe/semi-ui';
+import { User, Comment, PostImage } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import MyEmpty from '@/components/Empty';
+import dayjs from 'dayjs';
+import PostAction from '@/components/PostAction';
 
 const COMMENT_CREATED = 'COMMENT_CREATED';
 const COMMENT_NUM = 'COMMENT_NUM';
@@ -89,17 +92,39 @@ const CommentList = ({ postId }: { postId: string }) => {
       renderItem={(item: CommmentItem) => (
         <List.Item
           key={item.id}
-          header={<Avatar>{item.user.name}</Avatar>}
-          main={
-            <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>{item.content}</p>
+          header={
+            <div className='flex w-[80px] flex-col items-center justify-center gap-2 md:w-[150px] md:flex-row'>
+              {item.user.image ? (
+                <Avatar size='medium' alt='avatar' src={item.user?.image} />
+              ) : (
+                <Avatar size='medium' alt='avatar'>
+                  {item.user.name?.[0]}
+                </Avatar>
+              )}
+              <div className='text-center md:text-start'>
+                <div className='text-sm	text-white'>{item.user.name}</div>
+                <div className='hidden text-xs text-slate-300 md:block'>
+                  {dayjs(item?.createdAt).fromNow()}
+                </div>
+              </div>
+            </div>
           }
+          main={<p className='break-all text-slate-100'>{item.content}</p>}
         />
       )}
     />
   );
 };
 
-const LeaveComment = ({ postId }: { postId: string }) => {
+const LeaveComment = ({
+  postId,
+  liked,
+  likesCount,
+}: {
+  postId: string;
+  liked: boolean;
+  likesCount: number;
+}) => {
   const [numOfComments, setNumOfComments] = useState(0);
   const [comment, setComment] = useState('');
   const { mutateAsync } = api.comment.create.useMutation();
@@ -127,26 +152,29 @@ const LeaveComment = ({ postId }: { postId: string }) => {
   }, []);
 
   return (
-    <section className='bg-white py-4 dark:bg-gray-900'>
-      <div className='mx-auto max-w-2xl px-4'>
+    <section className='bg-transparent'>
+      <div className='mx-auto max-w-2xl'>
         <div className='mb-6 flex items-center justify-between'>
-          <h3 className='text-md font-bold text-gray-900 dark:text-white'>
-            Discussion ({numOfComments})
-          </h3>
+          <PostAction
+            postId={postId}
+            commentsCount={numOfComments}
+            liked={liked}
+            likesCount={likesCount}
+          />
         </div>
         <form className='mb-6' onSubmit={handleSubmit}>
-          <div className='mb-4 rounded-lg rounded-t-lg border border-gray-200 bg-white py-2 px-4 dark:border-gray-700 dark:bg-gray-800'>
+          <div className='mb-4 rounded-lg rounded-t-lg '>
             <label htmlFor='comment' className='sr-only'>
               Your comment
             </label>
-            <textarea
-              onChange={(e) => setComment(e.target.value)}
-              id='comment'
-              rows={6}
-              className='w-full border-0 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400'
+            <TextArea
+              onChange={(e) => setComment(e)}
+              autosize
+              rows={3}
               placeholder='Write a comment...'
               required
-            ></textarea>
+              maxLength={190}
+            ></TextArea>
           </div>
           <button
             type='submit'
@@ -160,58 +188,82 @@ const LeaveComment = ({ postId }: { postId: string }) => {
   );
 };
 
-type PostItem = Post & {
-  likes: {
-    id: string;
-  }[];
-  _count: {
-    likes: number;
-  };
-  images: PostImage[];
-};
-
 const Post: NextPageWithLayout = () => {
   const router = useRouter();
-  const { pid } = router.query;
-  const post = pid
-    ? api.post.findOne.useQuery({ id: pid as string }, { refetchOnWindowFocus: false })
-    : ({ data: {} } as { data: PostItem });
+  const session = useSession();
+  const pid = router.query?.pid;
+
+  const { data: postData, refetch } = api.post.findOne.useQuery(
+    { id: pid as string },
+    { enabled: false, refetchOnWindowFocus: false },
+  );
+
+  useEffect(() => {
+    if (router.query?.pid) {
+      refetch();
+    }
+  }, [router.query?.pid]);
 
   const { Title, Paragraph } = Typography;
-  const session = useSession();
 
   return (
-    <main
-      className='min-h-screen pt-10
-  '
-    >
+    <main className='p-10'>
       <div className='m-auto max-w-xl	pb-10'>
+        <Link href={`/profile/${encodeURIComponent(postData?.author?.id as string)}`}>
+          <div className='flex items-center gap-x-4'>
+            {postData?.author.image ? (
+              <Avatar alt='avatar' src={postData?.author.image} />
+            ) : (
+              <Avatar alt='avatar'>{postData?.author?.name?.[0]}</Avatar>
+            )}
+
+            <div>
+              <div className='font-xl	text-white'>{postData?.author.name}</div>
+              <div className='text-sm text-slate-200'>
+                {dayjs(postData?.createdAt).format('MMM DD, YYYY')}
+              </div>
+            </div>
+          </div>
+        </Link>
+
         <Carousel
           style={{
             width: '100%',
             height: '300px',
-            display: post?.data?.images?.length === 0 ? 'none' : 'block',
+            display: postData?.images?.length === 0 ? 'none' : 'block',
+            marginTop: '20px',
           }}
           theme='dark'
           autoPlay={false}
           showArrow={false}
         >
-          {post?.data?.images?.map((image) => {
+          {postData?.images?.map((image) => {
             return <Image alt='postimages' key={image.id} src={image.url} fill />;
           })}
         </Carousel>
-        <Title heading={2} style={{ margin: '20px 0' }}>
-          {post?.data?.title}
+
+        <Title heading={1} style={{ margin: '20px 0' }}>
+          {postData?.title}
         </Title>
 
         <Paragraph spacing='extended' style={{ margin: '20px 0' }}>
-          {post?.data?.content}
+          {postData?.content}
         </Paragraph>
 
         {pid && typeof pid === 'string' && session.status === 'authenticated' && (
-          <LeaveComment postId={pid} />
+          <LeaveComment
+            postId={pid}
+            liked={(postData?.likes?.length ?? 0) > 0}
+            likesCount={postData?._count.likes || 0}
+          />
         )}
-        {pid && typeof pid === 'string' && <CommentList postId={pid || ''} />}
+        <Divider />
+
+        {pid && typeof pid === 'string' && (
+          <div className='mt-5'>
+            <CommentList postId={pid || ''} />
+          </div>
+        )}
       </div>
     </main>
   );

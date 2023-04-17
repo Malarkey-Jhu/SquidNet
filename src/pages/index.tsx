@@ -117,11 +117,7 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
-      <main
-        className='flex min-h-screen flex-col items-center justify-center
-       bg-[url("/bg.webp")]
-      '
-      >
+      <main className='flex min-h-screen flex-col items-center justify-center'>
         <div className='container flex flex-col items-center justify-center px-4 py-14 '>
           {session.data && <Tiptap onPublish={onPublish} />}
 
@@ -137,7 +133,10 @@ const Home: NextPageWithLayout = () => {
             >
               {curPosts.map((post) => {
                 return (
-                  <div className='group mb-6 w-[550px] rounded-lg bg-white p-8' key={post.id}>
+                  <div
+                    className='group mb-3 w-full rounded-lg bg-white p-6 md:mb-6 md:w-[550px] md:p-8'
+                    key={post.id}
+                  >
                     <div className='flex items-center justify-between '>
                       <div className='flex items-center gap-x-4 '>
                         <Link href={`/profile/${encodeURIComponent(post.authorId)}`}>

@@ -2,8 +2,6 @@ import React from 'react';
 import { Layout } from '@douyinfe/semi-ui';
 import MyHeader from './header';
 import Head from 'next/head';
-import MySider from './sider';
-import { useSession } from 'next-auth/react';
 
 const MyLayout = ({ children }) => {
   const { Header, Footer, Content, Sider } = Layout;
@@ -15,7 +13,10 @@ const MyLayout = ({ children }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Layout className='semi-always-dark'>
-        <Layout className='h-min-full relative bg-[url("/bg.webp")] bg-cover'>
+        <Layout
+          className='relative min-h-screen bg-[url("/bg.webp")] bg-repeat-y'
+          style={{ minHeight: '100vh' }}
+        >
           <MyHeader />
           {/* <MySider /> */}
           <Content className='mt-16'>{children}</Content>

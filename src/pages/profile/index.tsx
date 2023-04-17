@@ -55,7 +55,7 @@ const MyPostList = ({ userId }: { userId: string }) => {
   return (
     <div className='flex w-full flex-col justify-center'>
       {curPosts.length > 0 ? (
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-1  md:grid-cols-3 md:gap-4'>
           {curPosts.map((post, idx) => {
             return (
               <Link href={`/post/${post.id}`} key={post.id}>
@@ -145,31 +145,30 @@ const MyLikeList = ({ userId }: { userId: string }) => {
   return (
     <div className='flex w-full flex-col  justify-center'>
       {curPosts.length > 0 ? (
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-1 md:grid-cols-3 md:gap-4'>
           {curPosts.map((post, idx) => {
             return (
               <Link href={`/post/${post.id}`} key={post.id}>
-                <div className='relative'>
-                  <Card
-                    style={{ maxWidth: 300 }}
-                    bodyStyle={{
-                      padding: 10,
-                    }}
-                    cover={
-                      <div className='relative'>
-                        <Image
-                          src={`/card-bg-${(idx % 3) + 1}.webp`}
-                          width={298}
-                          height={86}
-                          alt='example'
-                        />
-                        <h3 className='absolute	 top-1/2	left-1/2 -translate-y-1/2 -translate-x-1/2 text-xl font-extrabold text-white	drop-shadow'>
-                          {post.post?.title}
-                        </h3>
-                      </div>
-                    }
-                  ></Card>
-                </div>
+                <Card
+                  style={{ maxWidth: 300 }}
+                  bodyStyle={{
+                    padding: 10,
+                    overflow: 'hidden',
+                  }}
+                  cover={
+                    <div className='relative'>
+                      <Image
+                        src={`/card-bg-${(idx % 3) + 1}.webp`}
+                        alt='example'
+                        width={298}
+                        height={86}
+                      />
+                      <h3 className='absolute	 top-1/2	left-1/2 -translate-y-1/2 -translate-x-1/2 text-xl font-extrabold text-white	drop-shadow'>
+                        {post.post?.title}
+                      </h3>
+                    </div>
+                  }
+                ></Card>
               </Link>
             );
           })}
@@ -251,14 +250,14 @@ const Profile = () => {
       {isLoading ? (
         <>Loading</>
       ) : (
-        <div className='relative w-full	 max-w-5xl overflow-hidden '>
+        <div className='relative w-full	 overflow-hidden md:max-w-4xl '>
           <input hidden ref={uploadRef} id='file' type='file' onChange={handleUpload} />
           <div className='relative'>
             <div
               style={{
                 backgroundImage: `url(${user?.banner || '/banner-default.jpeg'})`,
               }}
-              className={`group flex h-[300px] w-full cursor-pointer items-center justify-center bg-cover`}
+              className={`group flex h-[200px] w-full cursor-pointer items-center justify-center bg-cover md:h-[300px]`}
             >
               <div
                 className='flex hidden h-full w-full items-center justify-center bg-gray-300/10 group-hover:flex'
@@ -359,9 +358,9 @@ const Profile = () => {
               <TabPane tab='Likes' itemKey='2' className='py-3'>
                 <MyLikeList userId={id as string} />
               </TabPane>
-              <TabPane tab='Follows (Under Development)' itemKey='3' className='py-3'>
+              {/* <TabPane tab='Follows (Under Development)' itemKey='3' className='py-3'>
                 <MyEmpty desc='This person has no follows' title='No follows' />
-              </TabPane>
+              </TabPane> */}
             </Tabs>
           </div>
         </div>
