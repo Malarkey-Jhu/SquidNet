@@ -47,6 +47,10 @@ export const userRouter = createTRPCRouter({
         where: {
           isDeleted: false,
           userId: input.userId,
+          post: {
+            isDeleted: false,
+            published: true,
+          },
         },
         include: {
           post: true,

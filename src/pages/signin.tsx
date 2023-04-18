@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const SignIn: NextPage = (props): JSX.Element => {
-  const [userInfo, setUserInfo] = useState({ email: 'alan61109@gmail.com', password: '123456' });
+  const [userInfo, setUserInfo] = useState({ email: '', password: '' });
 
   const handleSubmit = async (e: any) => {
     // validate your userinfo

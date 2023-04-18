@@ -182,7 +182,14 @@ const Tiptap = ({ onPublish }: { onPublish: () => void }) => {
           invisible: !showEmoji,
         })}
       >
-        <Picker searchDisabled theme={Theme.DARK} onEmojiClick={handleEmojiClick} />
+        {showEmoji && (
+          <Picker
+            lazyLoadEmojis
+            searchDisabled
+            theme={Theme.DARK}
+            onEmojiClick={handleEmojiClick}
+          />
+        )}
       </div>
     </div>
   );

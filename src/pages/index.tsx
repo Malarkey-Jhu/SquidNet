@@ -90,13 +90,23 @@ const Home: NextPageWithLayout = () => {
   const [skip, setSkip] = useState(0);
   const [cursorId, setCursorId] = useState<string | undefined>();
 
-  const { data, isFetching } = api.post.findMany.useQuery(
+  const { data, isFetching, refetch } = api.post.findMany.useQuery(
     { take: PAGE_SIZE, skip, cursor: cursorId },
     { refetchOnWindowFocus: false },
   );
   const [curPosts, setCurPosts] = useState<PostItem[]>([]);
 
-  const onPublish = () => {};
+  const onPublish = () => {
+    debugger;
+    if (curPosts.length > 0) {
+      setCurPosts([]);
+      setSkip(0);
+      setCursorId(undefined);
+      refetch();
+    } else {
+      refetch();
+    }
+  };
 
   const handleNextPage = () => {
     if (curPosts.length > 0 && curPosts[curPosts.length - 1]) {
@@ -117,7 +127,7 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
-      <main className='flex min-h-screen flex-col items-center justify-center'>
+      <main className='flex flex-col items-center justify-center'>
         <div className='container flex flex-col items-center justify-center px-4 py-14 '>
           {session.data && <Tiptap onPublish={onPublish} />}
 
@@ -128,7 +138,11 @@ const Home: NextPageWithLayout = () => {
               hasMore={hasMore}
               loader={<h4>Loading...</h4>}
               endMessage={
-                <p className='p-3	text-center font-semibold text-white'>Yay! You have seen it all</p>
+                <p className='p-3	text-center font-semibold text-white'>
+                  {(data?.posts?.length ?? 0) > 0
+                    ? 'Yay! You have seen it all'
+                    : 'Oops! no posts yet'}
+                </p>
               }
             >
               {curPosts.map((post) => {
