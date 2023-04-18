@@ -14,6 +14,10 @@ const config = {
       },
       {
         protocol: 'https',
+        hostname: '**.aliyuncs.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'lf3-static.bytednsdoc.com',
       },
     ],
