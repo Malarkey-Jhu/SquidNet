@@ -97,11 +97,11 @@ const Home: NextPageWithLayout = () => {
   const [curPosts, setCurPosts] = useState<PostItem[]>([]);
 
   const onPublish = () => {
-    debugger;
     if (curPosts.length > 0) {
       setCurPosts([]);
       setSkip(0);
       setCursorId(undefined);
+      curLastCursorId.current = undefined;
       refetch();
     } else {
       refetch();
@@ -148,7 +148,7 @@ const Home: NextPageWithLayout = () => {
               {curPosts.map((post) => {
                 return (
                   <div
-                    className='group mb-3 w-full rounded-lg bg-white p-6 md:mb-6 md:w-[550px] md:p-8'
+                    className='mb-3 w-full rounded-lg bg-white p-6 md:mb-6 md:w-[550px] md:p-8'
                     key={post.id}
                   >
                     <div className='flex items-center justify-between '>
@@ -168,7 +168,7 @@ const Home: NextPageWithLayout = () => {
                         </div>
                       </div>
                       <Link href={`/post/${encodeURIComponent(post.id)}`}>
-                        <div className='h-[44px] w-[40px] bg-[url("/icon_arrow_1.png")] bg-cover group-hover:bg-[url("/icon_arrow_2.png")]' />
+                        <div className='h-[44px] w-[40px] bg-[url("/icon_arrow_1.png")] bg-cover hover:bg-[url("/icon_arrow_2.png")]' />
                       </Link>
                     </div>
 
