@@ -24,6 +24,7 @@ export const useOSSClient = () => {
         // 填写Bucket名称。
         bucket: '5610-final',
         // 刷新临时访问凭证。
+        endpoint: 'https://oss-accelerate.aliyuncs.com',
         refreshSTSToken: async () => {
           const { data: refreshToken } = await refetch();
           return {
