@@ -10,7 +10,7 @@ const config = {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '5610-final.oss-cn-shanghai.aliyuncs.com',
+        hostname: '**.aliyuncs.com',
       },
       {
         protocol: 'https',
