@@ -2,7 +2,7 @@ import { Avatar } from '@douyinfe/semi-ui';
 import { useSession } from 'next-auth/react';
 import { useUser } from '../User/UserProvider';
 
-let defaultStyle = {
+const defaultStyle = {
   flexBasis: '48px',
   flexShrink: 0,
   color: 'rgb(33 33 33)',

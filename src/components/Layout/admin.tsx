@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Layout, Empty } from '@douyinfe/semi-ui';
 import MyHeader from './header';
 import { IllustrationNoAccessDark, IllustrationNoAccess } from '@douyinfe/semi-illustrations';

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc';
-import { User } from '@prisma/client';
+import { type User } from '@prisma/client';
 
 export const userRouter = createTRPCRouter({
   findPosts: publicProcedure

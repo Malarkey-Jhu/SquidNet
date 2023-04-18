@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { google, youtube_v3 } from 'googleapis';
-import { GaxiosResponse } from 'gaxios';
+import { google, type youtube_v3 } from 'googleapis';
+import { type GaxiosResponse } from 'gaxios';
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc';
 

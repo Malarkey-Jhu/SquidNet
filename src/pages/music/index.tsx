@@ -2,9 +2,9 @@ import MyEmpty from '@/components/Empty';
 import Layout from '@/components/Layout';
 import { api } from '@/utils/api';
 import { Button, List, Pagination } from '@douyinfe/semi-ui';
-import { youtube_v3 } from 'googleapis';
+import { type youtube_v3 } from 'googleapis';
 import Link from 'next/link';
-import { ReactElement, useState } from 'react';
+import { type ReactElement, useState } from 'react';
 
 const Music = () => {
   const [pageToken, setPageToken] = useState('');

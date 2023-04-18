@@ -1,15 +1,15 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { type ReactElement, useEffect, useRef, useState } from 'react';
 import ProtectedLayout from '@/components/Layout/protected';
-import { Avatar, Button, Card, Form, Tabs, TabPane, Empty, Toast } from '@douyinfe/semi-ui';
+import { Avatar, Button, Card, type Form, Tabs, TabPane, Empty, Toast } from '@douyinfe/semi-ui';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { api } from '@/utils/api';
 import Icon, { IconMale, IconFemale, IconHelpCircle, IconCamera } from '@douyinfe/semi-icons';
 import { useOSSClient } from '@/hooks/oss-client';
-import { PostItem } from '.';
+import { type PostItem } from '.';
 import dayjs from 'dayjs';
 import MyEmpty from '@/components/Empty';
-import { Like, Post } from '@prisma/client';
+import { type Like, type Post } from '@prisma/client';
 import Link from 'next/link';
 import ProfileForm from '@/components/ProfileForm';
 import { useSession } from 'next-auth/react';
@@ -353,10 +353,10 @@ const Profile = () => {
           <div className='mt-4 px-6'>
             <Tabs type='line'>
               <TabPane tab='Posts' itemKey='1' className='py-3'>
-                <MyPostList userId={id as string} />
+                <MyPostList userId={id } />
               </TabPane>
               <TabPane tab='Likes' itemKey='2' className='py-3'>
-                <MyLikeList userId={id as string} />
+                <MyLikeList userId={id } />
               </TabPane>
               {/* <TabPane tab='Follows (Under Development)' itemKey='3' className='py-3'>
                 <MyEmpty desc='This person has no follows' title='No follows' />

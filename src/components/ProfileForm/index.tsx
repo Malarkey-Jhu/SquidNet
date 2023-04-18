@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react';
 import { Button, Form, Select } from '@douyinfe/semi-ui';
-import { User } from '@prisma/client';
+import { type User } from '@prisma/client';
 
 const ProfileForm = React.forwardRef<Form<any>, { user: User | null | undefined }>((props, ref) => {
   if (!props.user) return <>user not found</>;

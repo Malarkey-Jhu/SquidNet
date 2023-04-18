@@ -1,14 +1,14 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { type ReactElement, useEffect, useRef, useState } from 'react';
 import Layout from '@/components/Layout';
-import { Avatar, Button, Card, Form, Tabs, TabPane, Empty } from '@douyinfe/semi-ui';
+import { Avatar, Button, Card, type Form, Tabs, TabPane, Empty } from '@douyinfe/semi-ui';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { api } from '@/utils/api';
 
-import { PostItem } from '.';
+import { type PostItem } from '.';
 import dayjs from 'dayjs';
 import MyEmpty from '@/components/Empty';
-import { Like, Post } from '@prisma/client';
+import { type Like, type Post } from '@prisma/client';
 import Link from 'next/link';
 import GenderIcon from '@/components/Gender';
 

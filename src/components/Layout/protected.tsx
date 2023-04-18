@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Layout } from '@douyinfe/semi-ui';
 import MyHeader from './header';
 import MySider from './sider';

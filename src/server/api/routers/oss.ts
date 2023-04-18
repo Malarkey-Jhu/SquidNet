@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { STS } from 'ali-oss';
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '@/server/api/trpc';
-let sts = new STS({
+const sts = new STS({
   accessKeyId: process.env.OSS_ACCESS_KEY_ID!,
   accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET!,
 });

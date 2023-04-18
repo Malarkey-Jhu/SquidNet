@@ -1,5 +1,5 @@
 import { api } from '@/utils/api';
-import { User } from '@prisma/client';
+import { type User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { createContext, useContext, useEffect } from 'react';
 
@@ -16,7 +16,7 @@ export const UserProivder = ({ children }) => {
     data: userData,
     refetch,
     isLoading,
-  } = api.user.find.useQuery({ userId: userId as string }, { refetchOnWindowFocus: false });
+  } = api.user.find.useQuery({ userId: userId  }, { refetchOnWindowFocus: false });
 
   const userConfig = {
     user: userData,

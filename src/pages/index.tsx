@@ -8,9 +8,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Image from 'next/image';
 
 import { api } from '@/utils/api';
-import { NextPageWithLayout } from './_app';
+import { type NextPageWithLayout } from './_app';
 import cx from 'classnames';
-import { Post, PostImage } from '@prisma/client';
+import { type Post, type PostImage } from '@prisma/client';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';

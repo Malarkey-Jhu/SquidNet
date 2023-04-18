@@ -24,7 +24,7 @@ enum SEARCH_TYPE {
   MUSIC = 'MUSIC',
 }
 
-import { Post, User } from '@prisma/client';
+import { type Post, type User } from '@prisma/client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 
@@ -198,10 +198,10 @@ const MySearch = () => {
                   main={
                     <Link href={`/profile/${item.id}`} onClick={() => setVisible(false)}>
                       <span style={{ color: 'var(--semi-color-text-0)', fontWeight: 500 }}>
-                        {(item as User).name}
+                        {(item ).name}
                       </span>
                       <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>
-                        {(item as User).nscode}
+                        {(item ).nscode}
                       </p>
                     </Link>
                   }
@@ -222,10 +222,10 @@ const MySearch = () => {
                   main={
                     <Link href={`/post/${item.id}`} onClick={() => setVisible(false)}>
                       <span style={{ color: 'var(--semi-color-text-0)', fontWeight: 500 }}>
-                        {(item as Post).title}
+                        {(item ).title}
                       </span>
                       <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>
-                        {dayjs((item as Post).createdAt).format('DD/MM/YYYY')}
+                        {dayjs((item ).createdAt).format('DD/MM/YYYY')}
                       </p>
                     </Link>
                   }

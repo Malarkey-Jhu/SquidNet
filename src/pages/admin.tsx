@@ -1,5 +1,5 @@
 import ProtectedAdminLayout from '@/components/Layout/admin';
-import { ReactElement, useEffect, useState } from 'react';
+import { type ReactElement, useEffect, useState } from 'react';
 import { Table, Avatar, Button, Modal, Toast } from '@douyinfe/semi-ui';
 import dayjs from 'dayjs';
 import { api } from '@/utils/api';

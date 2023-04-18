@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 
 const MusicDetail = () => {
   const router = useRouter();

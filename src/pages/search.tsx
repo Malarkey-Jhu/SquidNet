@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import {
   Input,
   Modal,
@@ -17,7 +17,7 @@ import MyEmpty from '@/components/Empty';
 import { api } from '@/utils/api';
 import { debounce } from 'throttle-debounce';
 import dayjs from 'dayjs';
-import { Post, User } from '@prisma/client';
+import { type Post, type User } from '@prisma/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -168,10 +168,10 @@ const Search = () => {
                 main={
                   <Link href={`/profile/${item.id}`} onClick={() => setVisible(false)}>
                     <span style={{ color: 'var(--semi-color-text-0)', fontWeight: 500 }}>
-                      {(item as User).name}
+                      {(item ).name}
                     </span>
                     <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>
-                      {(item as User).nscode}
+                      {(item ).nscode}
                     </p>
                   </Link>
                 }
@@ -190,10 +190,10 @@ const Search = () => {
                 main={
                   <Link href={`/post/${item.id}`} onClick={() => setVisible(false)}>
                     <span style={{ color: 'var(--semi-color-text-0)', fontWeight: 500 }}>
-                      {(item as Post).title}
+                      {(item ).title}
                     </span>
                     <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>
-                      {dayjs((item as Post).createdAt).format('DD/MM/YYYY')}
+                      {dayjs((item ).createdAt).format('DD/MM/YYYY')}
                     </p>
                   </Link>
                 }

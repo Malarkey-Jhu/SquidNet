@@ -14,7 +14,7 @@ import cx from 'classnames';
 
 import { api } from '@/utils/api';
 import dynamic from 'next/dynamic';
-import { EmojiClickData, Theme } from 'emoji-picker-react';
+import { type EmojiClickData, Theme } from 'emoji-picker-react';
 
 const Picker = dynamic(
   () => {

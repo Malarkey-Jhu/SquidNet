@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import { NextPageWithLayout } from '../_app';
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import { type NextPageWithLayout } from '../_app';
+import { type ReactElement, useEffect, useRef, useState } from 'react';
 import { api } from '@/utils/api';
 import { Carousel, Divider } from '@douyinfe/semi-ui';
 import { Typography } from '@douyinfe/semi-ui';
@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { events } from '@/helpers/event-emitter';
 
 import { List, Button, Avatar, Toast, TextArea } from '@douyinfe/semi-ui';
-import { User, Comment, PostImage } from '@prisma/client';
+import { type User, type Comment, PostImage } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import MyEmpty from '@/components/Empty';
 import dayjs from 'dayjs';
