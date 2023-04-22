@@ -36,7 +36,9 @@ const Search = () => {
   const [searchText, setSearchText] = useState((router.query.q as string) || '');
   const [page, setPage] = useState(DEFAULT_PAGE);
   const [pageToken, setPageToken] = useState<undefined | string>();
-  const [searchType, setSearchType] = useState<SEARCH_TYPE>(SEARCH_TYPE.POST);
+  const [searchType, setSearchType] = useState<SEARCH_TYPE>(
+    (router.query.type as SEARCH_TYPE) || SEARCH_TYPE.POST,
+  );
 
   const {
     data: userData,
@@ -83,14 +85,25 @@ const Search = () => {
   );
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('q', searchText);
-    const newUrl =
-      searchText.trim() === ''
-        ? window.location.pathname
-        : `${window.location.pathname}?${urlParams.toString()}`;
-    window.history.pushState({ path: newUrl }, '', newUrl);
-  }, [searchText]);
+    if (
+      userAPIStatus === 'success' ||
+      postAPIStatus === 'success' ||
+      musicAPIStatus === 'success'
+    ) {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('q', searchText);
+      urlParams.set('type', searchType);
+      const newUrl =
+        searchText.trim() === ''
+          ? window.location.pathname
+          : `${window.location.pathname}?${urlParams.toString()}`;
+      if (window.location.search !== urlParams.toString()) {
+        console.log(window.location.search);
+        console.log(urlParams.toString());
+        router.replace(newUrl, undefined, { shallow: true });
+      }
+    }
+  }, [userAPIStatus, postAPIStatus, musicAPIStatus, searchText, searchType]);
 
   useEffect(() => {
     if (router.query.q) {
@@ -166,12 +179,12 @@ const Search = () => {
               <List.Item
                 key={item.id}
                 main={
-                  <Link href={`/profile/${item.id}`} onClick={() => setVisible(false)}>
+                  <Link href={`/profile/${item.id}`}>
                     <span style={{ color: 'var(--semi-color-text-0)', fontWeight: 500 }}>
-                      {(item ).name}
+                      {item.name}
                     </span>
                     <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>
-                      {(item ).nscode}
+                      {item.nscode}
                     </p>
                   </Link>
                 }
@@ -188,12 +201,12 @@ const Search = () => {
             renderItem={(item) => (
               <List.Item
                 main={
-                  <Link href={`/post/${item.id}`} onClick={() => setVisible(false)}>
+                  <Link href={`/post/${item.id}`}>
                     <span style={{ color: 'var(--semi-color-text-0)', fontWeight: 500 }}>
-                      {(item ).title}
+                      {item.title}
                     </span>
                     <p style={{ color: 'var(--semi-color-text-2)', margin: '4px 0' }}>
-                      {dayjs((item ).createdAt).format('DD/MM/YYYY')}
+                      {dayjs(item.createdAt).format('DD/MM/YYYY')}
                     </p>
                   </Link>
                 }

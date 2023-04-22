@@ -35,6 +35,59 @@ export const commentRouter = createTRPCRouter({
         total: totalRecords,
       };
     }),
+
+  findMusic: publicProcedure
+    .input(z.object({ musicId: z.string(), skip: z.number(), take: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const totalRecordsPromise = ctx.prisma.comment.count({
+        where: {
+          musicId: input.musicId,
+          published: true,
+        },
+      });
+      const commentsPromise = ctx.prisma.comment.findMany({
+        skip: input.skip,
+        take: input.take,
+        where: {
+          musicId: input.musicId,
+          published: true,
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      const [comments, totalRecords] = await Promise.all([commentsPromise, totalRecordsPromise]);
+      return {
+        comments,
+        curSkip: input.skip,
+        hasMore: input.skip + input.take < totalRecords,
+        total: totalRecords,
+      };
+    }),
+  createMusic: protectedProcedure
+    .input(z.object({ musicId: z.string(), content: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+
+      const comment = await ctx.prisma.comment.create({
+        data: {
+          content: input.content,
+          published: true,
+          musicId: input.musicId,
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
+
+      return comment;
+    }),
   create: protectedProcedure
     .input(z.object({ postId: z.string(), content: z.string() }))
     .mutation(async ({ input, ctx }) => {

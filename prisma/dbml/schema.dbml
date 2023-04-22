@@ -63,8 +63,9 @@ Table Comment {
   content String [not null]
   userId String [not null]
   user User [not null]
-  post Post [not null]
-  postId String [not null]
+  post Post
+  postId String
+  musicId String
   likes Like [not null]
   parentId String
   parent Comment
@@ -82,10 +83,12 @@ Table Like {
   commentId String
   comment Comment
   isDeleted Boolean [not null, default: false]
+  musicId String
 
   indexes {
     (userId, postId) [unique]
     (userId, commentId) [unique]
+    (userId, musicId) [unique]
   }
 }
 
