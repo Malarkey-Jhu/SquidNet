@@ -23,6 +23,10 @@ const PostAction = ({
   const isLoggedIn = session.status === 'authenticated';
   const [likeCntCopy, setLikeCntCopy] = useState(likesCount);
 
+  useEffect(() => {
+    if (likesCount !== likeCntCopy) setLikeCntCopy(likesCount);
+  }, [likesCount]);
+
   const handleLike = () => {
     if (!isLoggedIn) return;
 
